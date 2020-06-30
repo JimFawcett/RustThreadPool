@@ -22,7 +22,7 @@ impl<M> ThreadPool<M>
     /*-- construct threadpool --*/
     /* provide threadpool processing as f:F in new */
     pub fn new<F>(nt:u8, f:F) -> ThreadPool<M> 
-    where F: for<'a> FnOnce() -> () + Send + 'static + Copy
+    where F: FnOnce() -> () + Send + 'static + Copy
     {
         /* safely share BlockingQueue with Arc */
         let sqm = Arc::new(BlockingQueue::<M>::new());
