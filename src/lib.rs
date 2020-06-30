@@ -3,12 +3,20 @@
 //                                                         //
 // Jim Fawcett, https://JimFawcett.github.com, 29 Jun 2020 //
 /////////////////////////////////////////////////////////////
-
+/*
+   There are three undefined methods for ThreadPool<M>
+   that need to be implemented before this design is
+   complete, e.g.:
+   - post_work_item posts a function object to input queue
+   - post_message posts a message to input queue
+   - get_message retrieves results from an output queue
+*/
 #![allow(dead_code)]
 use std::fmt::*;
 use rust_blocking_queue::*;
 use std::thread::*;
 use std::sync::*;
+use std::default::{Default};
 
 #[derive(Debug)]
 pub struct ThreadPool<M> 
@@ -56,6 +64,20 @@ impl<M> ThreadPool<M>
               https://users.rust-lang.org/t/spawn-threads-and-join-in-destructor/1613
             */
         }
+    }
+    pub fn post_work_item<F>(&mut self, _f:F)
+    where F:FnOnce() -> () + Send + 'static + Copy {
+        /* to be defined */
+    }
+    pub fn post_message<Msg>(&mut self, _msg:Msg) 
+    where Msg:Debug + Clone {
+        /* to be defined */
+    }
+    pub fn get_message<Msg>(&mut self) -> Msg 
+    where Msg:Debug + Clone + Default {
+        /* to be define */
+        let m:Msg = Msg::default();
+        m
     }
 }
 
