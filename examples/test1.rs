@@ -17,39 +17,34 @@ use std::time;
 use rust_blocking_queue::{BlockingQueue};
 use rust_thread_pool::{ThreadPool};
 
-/*-- test function run by thread pool threads --*/
-fn test_fun() { 
-    let millis = time::Duration::from_millis(1);
+/*-- test queue in pool --*/
+pub fn test_queue_in_pool(tp: &BlockingQueue<String>) {
+    let q = String::from("quit");
     let id = thread::current().id();
-    for _ in 0..5 {
-        print!("\n  this is a test from thread {:?}", id);
-        thread::sleep(millis);
-    }
- }
-
-/*-- use test function for thread pool processing --*/
-fn test1() {
-    print!("\n  -- demonstrate threadpool using function --\n");
-    let mut tp = ThreadPool::<String>::new(5, test_fun);
-    tp.wait();
-}
-/*-- using closure for thread pool processing --*/
-fn test2() {
-    print!("\n  -- demonstrate threadpool using closure --\n");
-    /* define closure cl */
-    let millis = time::Duration::from_millis(1);
-    /* capture data */
-    let msg = "test message";
-    print!("\n  capture data is: {:?}\n", msg);
-    let cl = move || { 
-        let id = thread::current().id();
-        for _ in 0..5 {
-            print!("\n  {} from {:?}", msg, id);
-            thread::sleep(millis);
+    loop {
+        let msg = tp.de_q();
+        print!("\n  deQed {:<12} : {:?}", msg, id);
+        if msg == q {
+            tp.en_q(msg);
+            break;
         }
-    };
-    /* run closure cl in thread pool with 5 threads */
-    let mut tp = ThreadPool::<String>::new(5, cl);
+        thread::yield_now();
+    }
+}
+/*-- post to pool --*/
+pub fn post_to_pool() {
+    let mut tp = ThreadPool::<String>::new(4, test_queue_in_pool);
+    let msg = String::from("message #");
+    
+    let _millis = time::Duration::from_millis(10);
+    
+    for i in 0..25 {
+        let mut msg = msg.clone();
+        msg.push_str(&i.to_string());
+        tp.post_message(msg);
+        // thread::sleep(_millis);
+    }
+    tp.post_message("quit".to_string());
     tp.wait();
 }
 /*-- simple test of BlockingQueue --*/
@@ -102,9 +97,8 @@ fn main() {
     print!("\n  Demonstrate queue shared between threads");
     print!("\n ==========================================\n");
 
+    post_to_pool();
     // test0();  // test BlockingQueue
-    // test1();  // test threadpool with function
-    test2();  // thest threadpool with closure
 
     print!("\n\n  That's all Folks!\n");
 }

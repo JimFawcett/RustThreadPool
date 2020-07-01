@@ -4,11 +4,10 @@
 // Jim Fawcett, https://JimFawcett.github.com, 29 Jun 2020 //
 /////////////////////////////////////////////////////////////
 /*
-   There are three undefined methods for ThreadPool<M>
+   There are two undefined methods for ThreadPool<M>
    that need to be implemented before this design is
    complete, e.g.:
    - post_work_item posts a function object to input queue
-   - post_message posts a message to input queue
    - get_message retrieves results from an output queue
 */
 #![allow(dead_code)]
@@ -26,11 +25,12 @@ pub struct ThreadPool<M>
     /* see note below about Option */
 }
 impl<M> ThreadPool<M> 
+where M: Send + 'static
 {
     /*-- construct threadpool --*/
     /* provide threadpool processing as f:F in new */
     pub fn new<F>(nt:u8, f:F) -> ThreadPool<M> 
-    where F: FnOnce() -> () + Send + 'static + Copy
+    where F: FnOnce(&BlockingQueue<M>) -> () + Send + 'static + Copy
     {
         /* safely share BlockingQueue with Arc */
         let sqm = Arc::new(BlockingQueue::<M>::new());
@@ -39,7 +39,9 @@ impl<M> ThreadPool<M>
         for _i in 0..nt {
             /* ref to master shared queue (sqm) is captured */
             let _sq = Arc::clone(&sqm);
-            let handle = std::thread::spawn( move || { f() });
+            let handle = std::thread::spawn( move || { 
+                f(&_sq);  // thread_pool_processing
+            });
             vt.push(Some(handle));
         }
         Self { // return newly created threadpool
@@ -65,18 +67,18 @@ impl<M> ThreadPool<M>
             */
         }
     }
+    pub fn post_message(&mut self, _msg:M) 
+    where M:Debug + Clone {
+        self.sbq.en_q(_msg);
+    }
     pub fn post_work_item<F>(&mut self, _f:F)
     where F:FnOnce() -> () + Send + 'static + Copy {
         /* to be defined */
     }
-    pub fn post_message<Msg>(&mut self, _msg:Msg) 
-    where Msg:Debug + Clone {
-        /* to be defined */
-    }
-    pub fn get_message<Msg>(&mut self) -> Msg 
-    where Msg:Debug + Clone + Default {
+    pub fn get_message(&mut self) -> M 
+    where M:Debug + Clone + Default {
         /* to be define */
-        let m:Msg = Msg::default();
+        let m:M = M::default();
         m
     }
 }
@@ -87,7 +89,8 @@ mod tests {
     #[test]
     fn test() { print!("\n  this is a test"); }
     fn test_new() {
-        let mut tp = ThreadPool::<String>::new(2, test);
-        tp.wait();
+        // -- needs updating --
+        // let mut tp = ThreadPool::<String>::new(2, test);
+        // tp.wait();
     }
 }
