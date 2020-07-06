@@ -27,8 +27,10 @@ pub struct ThreadPool<M>
 impl<M> ThreadPool<M> 
 where M: Send + 'static
 {
-    /*-- construct threadpool --*/
-    /* provide threadpool processing as f:F in new */
+    /*-----------------------------------------------------
+      construct threadpool, starting nt threads,
+      provide threadpool processing as f:F in new 
+    */
     pub fn new<F>(nt:u8, f:F) -> ThreadPool<M> 
     where F: FnOnce(&BlockingQueue<M>) -> () + Send + 'static + Copy
     {
@@ -37,10 +39,13 @@ where M: Send + 'static
         let mut vt = Vec::<Option<JoinHandle<()>>>::new();
         /* start nt threads */
         for _i in 0..nt {
-            /* ref to master shared queue (sqm) is captured */
-            let _sq = Arc::clone(&sqm);
+            /*----------------------------------------------- 
+              ref sq to master shared queue (sqm) is captured
+              by thread proc closure 
+            */
+            let sq = Arc::clone(&sqm);
             let handle = std::thread::spawn( move || { 
-                f(&_sq);  // thread_pool_processing
+                f(&sq);  // thread_pool_processing
             });
             vt.push(Some(handle));
         }
@@ -67,18 +72,15 @@ where M: Send + 'static
             */
         }
     }
+    /*-- post to ThreadPool queue --*/
     pub fn post_message(&mut self, _msg:M) 
     where M:Debug + Clone {
         self.sbq.en_q(_msg);
     }
-    // pub fn post_work_item(&mut self, _f:M)
-    // // where M:FnOnce() -> () + Send + 'static + Copy {
-    // where M:Debug {
-    //     self.sbq.en_q(_f);
-    // }
+    /*-- return results to caller --*/
     pub fn get_message(&mut self) -> M 
     where M:Debug + Clone + Default {
-        /* to be define */
+        /* to be defined */
         let m:M = M::default();
         m
     }
@@ -88,10 +90,15 @@ where M: Send + 'static
 mod tests {
     use super::*;
     #[test]
-    fn test() { print!("\n  this is a test"); }
     fn test_new() {
-        // -- needs updating --
-        // let mut tp = ThreadPool::<String>::new(2, test);
-        // tp.wait();
+        let test = |bq:&BlockingQueue<String>| { 
+            let msg = bq.de_q();
+            print!("\n  {:?}", msg);
+        };
+        let mut tp = ThreadPool::<String>::new(2, test);
+        let msg = "test message".to_string();
+        tp.post_message(msg);
+        tp.post_message("quit".to_string());
+        tp.wait();
     }
 }

@@ -17,8 +17,8 @@ use std::time;
 use rust_blocking_queue::{BlockingQueue};
 use rust_thread_pool::{ThreadPool};
 
-/*-- test queue in pool --*/
-pub fn test_queue_in_pool(tp: &BlockingQueue<String>) {
+/*-- test queued string messages in pool --*/
+pub fn test_message_in_pool(tp: &BlockingQueue<String>) {
     let q = String::from("quit");
     let id = thread::current().id();
     loop {
@@ -31,14 +31,14 @@ pub fn test_queue_in_pool(tp: &BlockingQueue<String>) {
         thread::yield_now();
     }
 }
-/*-- post to pool --*/
-pub fn post_to_pool() {
-    let mut tp = ThreadPool::<String>::new(4, test_queue_in_pool);
+/*-- post message to pool --*/
+pub fn post_message_to_pool() {
+    let mut tp = ThreadPool::<String>::new(4, test_message_in_pool);
     let msg = String::from("message #");
     
     let _millis = time::Duration::from_millis(10);
     
-    for i in 0..25 {
+    for i in 0..20 {
         let mut msg = msg.clone();
         msg.push_str(&i.to_string());
         tp.post_message(msg);
@@ -47,7 +47,9 @@ pub fn post_to_pool() {
     tp.post_message("quit".to_string());
     tp.wait();
 }
-
+/*-----------------------------------------------------------
+  Define WorkItem type to execute in ThreadPool<WorkItem>
+*/
 #[derive(Debug, Clone)]
 pub struct WorkItem {
     stop: bool,
@@ -68,13 +70,10 @@ impl WorkItem {
     }
 }
 
-/*-- test queue in pool --*/
+/*-- test queued WorkItems in pool --*/
 pub fn test_workitem_in_pool(tp: &BlockingQueue<WorkItem>) {
-    // let q = String::from("quit");
-    let _id = thread::current().id();
     loop {
         let wi: WorkItem = tp.de_q();
-        // print!("\n  WorkItem: {:?}", wi);
         if wi.execute() {
             tp.en_q(wi);
             break;
@@ -92,14 +91,12 @@ pub fn post_workitem_to_pool() {
     
     let _millis = time::Duration::from_millis(10);
     
-    for _i in 0..25 {
-        // tp.post_work_item(wkitm.clone());
+    for _i in 0..20 {
         tp.post_message(wkitm.clone());
         thread::sleep(_millis);
     }
     wkitm.quit();
     tp.post_message(wkitm);
-    // tp.post_work_item(wkitm);
     tp.wait();
 }
 /*-- simple test of BlockingQueue --*/
@@ -150,10 +147,10 @@ fn test0() {
 fn main() {
 
     print!("\n  Demonstrate queue shared between threads");
-    print!("\n ==========================================\n");
+    print!("\n ==========================================");
 
     post_workitem_to_pool();
-    // post_to_pool();
+    // post_message_to_pool();
     // test0();  // test BlockingQueue
 
     print!("\n\n  That's all Folks!\n");
