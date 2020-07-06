@@ -71,10 +71,11 @@ where M: Send + 'static
     where M:Debug + Clone {
         self.sbq.en_q(_msg);
     }
-    pub fn post_work_item<F>(&mut self, _f:F)
-    where F:FnOnce() -> () + Send + 'static + Copy {
-        /* to be defined */
-    }
+    // pub fn post_work_item(&mut self, _f:M)
+    // // where M:FnOnce() -> () + Send + 'static + Copy {
+    // where M:Debug {
+    //     self.sbq.en_q(_f);
+    // }
     pub fn get_message(&mut self) -> M 
     where M:Debug + Clone + Default {
         /* to be define */

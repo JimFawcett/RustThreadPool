@@ -47,6 +47,61 @@ pub fn post_to_pool() {
     tp.post_message("quit".to_string());
     tp.wait();
 }
+
+#[derive(Debug, Clone)]
+pub struct WorkItem {
+    stop: bool,
+}
+impl WorkItem {
+    pub fn new() -> WorkItem {
+        WorkItem {
+            stop: false,
+        }
+    }
+    pub fn execute(&self) -> bool {
+        let _id = thread::current().id();
+        print!("\n  executing work item: {:?}", _id);
+        self.stop
+    }
+    pub fn quit(&mut self) {
+        self.stop = true;
+    }
+}
+
+/*-- test queue in pool --*/
+pub fn test_workitem_in_pool(tp: &BlockingQueue<WorkItem>) {
+    // let q = String::from("quit");
+    let _id = thread::current().id();
+    loop {
+        let wi: WorkItem = tp.de_q();
+        // print!("\n  WorkItem: {:?}", wi);
+        if wi.execute() {
+            tp.en_q(wi);
+            break;
+        }
+        thread::yield_now();
+    }
+    print!("\n  thread terminating");
+}
+
+/*-- post to pool --*/
+pub fn post_workitem_to_pool() {
+
+    let mut tp = ThreadPool::<WorkItem>::new(4, test_workitem_in_pool);
+    let mut wkitm = WorkItem::new();
+    
+    let _millis = time::Duration::from_millis(10);
+    
+    for _i in 0..25 {
+        // tp.post_work_item(wkitm.clone());
+        tp.post_message(wkitm.clone());
+        thread::sleep(_millis);
+    }
+    wkitm.quit();
+    tp.post_message(wkitm);
+    // tp.post_work_item(wkitm);
+    tp.wait();
+}
 /*-- simple test of BlockingQueue --*/
 fn test0() {
 
@@ -97,7 +152,8 @@ fn main() {
     print!("\n  Demonstrate queue shared between threads");
     print!("\n ==========================================\n");
 
-    post_to_pool();
+    post_workitem_to_pool();
+    // post_to_pool();
     // test0();  // test BlockingQueue
 
     print!("\n\n  That's all Folks!\n");
