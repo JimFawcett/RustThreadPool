@@ -8,7 +8,7 @@
    that need to be implemented before this design is
    complete, e.g.:
    - post_work_item posts a function object to input queue
-   - get_message retrieves results from an output queue
+   - get_result retrieves results from an output queue
 */
 #![allow(dead_code)]
 use std::fmt::*;
