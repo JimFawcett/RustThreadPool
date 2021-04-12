@@ -46,7 +46,7 @@ share-able. One is a Mutex<VecDeque<T>>, and the other is a Condvar, e.g., a con
 Operation is illustrated by the file test1.rs in /examples.
 
 ## Build:
-Download and, in a command prompt, cargo build or cargo run.
+Download and, in a command prompt, cargo build or cargo test or cargo run --example test1.
 
 ## Status:
 ThreadPool has been used in several projects in this repository.  You may wisht to look at
