@@ -8,7 +8,7 @@ RustThreadPool is a facility for processing a function object concurrently on a 
 <img src="https://JimFawcett.github.io/Pictures/ThreadPoolDiagram.jpg" width="500" />                                   
 
 ## Design:
-There is one struct, ThreadPool<M>, with an associated function and five methods in this design:
+There is one struct, ThreadPool<M>, with theww methods in this design:
 
 ```rust
 #[derive(Debug)]
@@ -32,4 +32,6 @@ pub fn wait(&mut self)
 pub fn post_message(&mut self, _msg:M) 
 where M:Debug + Clone 
 
+Sharing between threads is only possible, due to rules of the Rust language, if the shared items are all Mutexes or Condvars, or an aggregate of those, e.g., a tuple, or struct like BlockingQueue.
 
+An instance of BlockingQueue<T> can be shared between threads because it only has two fields and those are share-able. One is a Mutex<VecDeque<T>>, and the other is a Condvar, e.g., a condition variable. 
