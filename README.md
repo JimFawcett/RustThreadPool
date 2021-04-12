@@ -1,6 +1,6 @@
 # RustThreadPool
 
-### Documentation Details
+<span style="font-size:larger; font-weight:bold">Documentation Details</span>  
 https://JimFawcett.github.io/RustThreadPool.html
 
 ## Concept:
