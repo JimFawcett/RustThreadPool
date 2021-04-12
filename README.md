@@ -43,7 +43,10 @@ An instance of BlockingQueue<T> can be shared between threads because it only ha
 Operation is illustrated by the file test1.rs in /examples.
 
 ## Build:
-Download and, in a command prompt, cargo build or cargo test or cargo run --example test1.
+Download and, in a command prompt, use one of the following:
+  - cargo build
+  - cargo test
+  - cargo run --example test1.
 
 ## Status:
 ThreadPool has been used in several projects in this repository.  You may wish to look at <a href="https://JimFawcett.github.io/RustCommExperiments.html">RustCommExperiments</a>
