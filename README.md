@@ -7,6 +7,9 @@ RustThreadPool is a facility for processing a function object concurrently on a 
 
 <img src="https://JimFawcett.github.io/Pictures/ThreadPoolDiagram.jpg" width="500" />                                   
 
+## Design:
+There is one struct, ThreadPool<M>, with an associated function and five methods in this design:
+
 ```rust
 #[derive(Debug)]
 pub struct ThreadPool<M> 
