@@ -39,6 +39,7 @@ Mutexes or Condvars, or an aggregate of those, e.g., a tuple, or struct like Blo
 
 An instance of BlockingQueue<T> can be shared between threads because it only has two fields and those are 
 share-able. One is a Mutex<VecDeque<T>>, and the other is a Condvar, e.g., a condition variable. 
+```
 
 ## Operation:
 Operation is illustrated by the file test1.rs in /examples.
