@@ -8,7 +8,7 @@ Rust threadpool that accepts number of threads and function object in constructo
   
 <table>
   <tr>
-    <td>
+    <td style="vertical-align:top;">
 <pre>/////////////////////////////////////////////////////////////
 // rust_thread_pool::lib.rs - threadpool wit BlockingQueue // 
 //                                                         //
