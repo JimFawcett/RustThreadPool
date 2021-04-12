@@ -3,7 +3,9 @@
 https://JimFawcett.github.io/RustThreadPool.html
 
 ## Concept:
-RustThreadPool is a facility for processing a function object concurrently on a specified number of threads, using a thread-safe blocking queue. Rust threadpool accepts number of threads and function object in constructor.  Uses RustBlockingQueue.
+RustThreadPool is a facility for processing a function object concurrently on a specified number of threads, 
+using a thread-safe blocking queue. Rust threadpool accepts number of threads and function object in constructor.  
+Uses RustBlockingQueue.
 
 <img src="https://JimFawcett.github.io/Pictures/ThreadPoolDiagram.jpg" width="500" />                                   
 
@@ -32,6 +34,8 @@ pub fn wait(&mut self)
 pub fn post_message(&mut self, _msg:M) 
 where M:Debug + Clone 
 
-Sharing between threads is only possible, due to rules of the Rust language, if the shared items are all Mutexes or Condvars, or an aggregate of those, e.g., a tuple, or struct like BlockingQueue.
+Sharing between threads is only possible, due to rules of the Rust language, if the shared items are all 
+Mutexes or Condvars, or an aggregate of those, e.g., a tuple, or struct like BlockingQueue.
 
-An instance of BlockingQueue<T> can be shared between threads because it only has two fields and those are share-able. One is a Mutex<VecDeque<T>>, and the other is a Condvar, e.g., a condition variable. 
+An instance of BlockingQueue<T> can be shared between threads because it only has two fields and those are 
+share-able. One is a Mutex<VecDeque<T>>, and the other is a Condvar, e.g., a condition variable. 
