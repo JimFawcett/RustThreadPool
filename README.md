@@ -3,8 +3,7 @@
 https://JimFawcett.github.io/RustThreadPool.html
 
 ## Concept:
-RustThreadPool is a facility for processing a function object concurrently on a specified number of threads, 
-using a thread-safe blocking queue. Rust threadpool accepts number of threads and function object in constructor.  
+RustThreadPool is a facility for processing a function object concurrently on a specified number of threads, using a thread-safe blocking queue. Rust threadpool accepts number of threads and function object in constructor.  
 
 Function object uses Messages posted to RustBlockingQueue.
 
@@ -34,12 +33,10 @@ pub fn wait(&mut self)
 /*-- post to ThreadPool queue --*/
 pub fn post_message(&mut self, _msg:M) 
 where M:Debug + Clone 
+```
+Sharing between threads is only possible, due to rules of the Rust language, if the shared items are all Mutexes or Condvars, or an aggregate of those, e.g., a tuple, or struct like BlockingQueue.
 
-Sharing between threads is only possible, due to rules of the Rust language, if the shared items are all 
-Mutexes or Condvars, or an aggregate of those, e.g., a tuple, or struct like BlockingQueue.
-
-An instance of BlockingQueue<T> can be shared between threads because it only has two fields and those are 
-share-able. One is a Mutex<VecDeque<T>>, and the other is a Condvar, e.g., a condition variable. 
+An instance of BlockingQueue<T> can be shared between threads because it only has two fields and those are share-able. One is a Mutex<VecDeque<T>>, and the other is a Condvar, e.g., a condition variable. 
 ```
 
 ## Operation:
@@ -49,6 +46,5 @@ Operation is illustrated by the file test1.rs in /examples.
 Download and, in a command prompt, cargo build or cargo test or cargo run --example test1.
 
 ## Status:
-ThreadPool has been used in several projects in this repository.  You may wish to look at
-<a href="https://JimFawcett.github.io/RustCommExperiments.html">RustCommExperiments</a>
+ThreadPool has been used in several projects in this repository.  You may wish to look at <a href="https://JimFawcett.github.io/RustCommExperiments.html">RustCommExperiments</a>
 
