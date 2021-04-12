@@ -28,4 +28,10 @@ pub fn wait(&mut self)
 pub fn post_message(&mut self, _msg:M) 
 where M:Debug + Clone 
 
-    
+/*---------------------------------------------
+pull message from threadpool, called by 
+threadpool threads 
+----------------------------------------------*/
+pub fn get_message(&mut self) -> M 
+where M:Debug + Clone + Default {
+
