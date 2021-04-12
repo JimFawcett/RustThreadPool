@@ -9,8 +9,7 @@ Rust threadpool that accepts number of threads and function object in constructo
 <table>
   <tr>
     <td>
-```rust
-/////////////////////////////////////////////////////////////
+<pre>/////////////////////////////////////////////////////////////
 // rust_thread_pool::lib.rs - threadpool wit BlockingQueue // 
 //                                                         //
 // Jim Fawcett, https://JimFawcett.github.com, 29 Jun 2020 //
@@ -96,10 +95,10 @@ where M: Send + 'static
         let m:M = M::default();
         m
     }
-}
+}</pre>
     </td>
     <td>
-/////////////////////////////////////////////////////////////
+<pre>/////////////////////////////////////////////////////////////
 // rust_thread_pool::test1.rs - demo thread pool           //
 //                                                         //
 // Jim Fawcett, https://JimFawcett.github.io, 29 Jun 2020  //
@@ -255,7 +254,7 @@ fn main() {
     // test0();  // test BlockingQueue
 
     print!("\n\n  That's all Folks!\n");
-}
+}</pre>
     </td>
   <tr>
 </table>
