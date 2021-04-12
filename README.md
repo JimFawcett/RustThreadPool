@@ -49,6 +49,6 @@ Operation is illustrated by the file test1.rs in /examples.
 Download and, in a command prompt, cargo build or cargo test or cargo run --example test1.
 
 ## Status:
-ThreadPool has been used in several projects in this repository.  You may wisht to look at
+ThreadPool has been used in several projects in this repository.  You may wish to look at
 <a href="https://JimFawcett.github.io/RustCommExperiments.html">RustCommExperiments</a>
 
