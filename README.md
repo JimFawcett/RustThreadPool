@@ -1,5 +1,6 @@
 # RustThreadPool
 
+## Documentation Details
 https://JimFawcett.github.io/RustThreadPool.html
 
 ## Concept:
