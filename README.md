@@ -6,6 +6,7 @@ Rust threadpool that accepts number of threads and function object in constructo
 
 # Rust ThreadPool
   
+```rust
 /////////////////////////////////////////////////////////////
 // rust_thread_pool::lib.rs - threadpool wit BlockingQueue // 
 //                                                         //
