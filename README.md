@@ -1,6 +1,6 @@
 # RustThreadPool
  
-https://JimFawcett.github.io/RustThreadPool.html
+<a href="https://JimFawcett.github.io/RustThreadPool.html">Documentation</a>
 
 ## Concept:
 RustThreadPool is a facility for processing a stream of messages with a function object concurrently on a specified number of threads, using a thread-safe blocking queue. Rust threadpool accepts number of threads and function object in constructor.  
