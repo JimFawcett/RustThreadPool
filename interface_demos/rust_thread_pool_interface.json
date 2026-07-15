@@ -1,0 +1,72 @@
+{
+  "library_name": "rust_thread_pool",
+  "purpose": "A thread pool implementation that uses a blocking queue to distribute work across multiple threads. It allows posting messages/work items to a shared queue that worker threads process concurrently.",
+  "language": "rust",
+  "public_functions": [
+    {
+      "name": "ThreadPool::new",
+      "signature": "pub fn new<F>(nt: u8, f: F) -> ThreadPool<M> where F: FnOnce(&BlockingQueue<M>) -> () + Send + 'static + Copy",
+      "parameters": [
+        {
+          "name": "nt",
+          "type": "u8",
+          "description": "Number of threads to spawn in the thread pool"
+        },
+        {
+          "name": "f",
+          "type": "F (generic, FnOnce(&BlockingQueue<M>) -> () + Send + 'static + Copy)",
+          "description": "A function/closure that defines the processing logic each thread will execute, receiving a reference to the shared blocking queue"
+        }
+      ],
+      "return_type": "ThreadPool<M>",
+      "description": "Constructs and initializes a new ThreadPool, spawning the specified number of threads. Each thread runs the provided function closure with access to the shared blocking queue."
+    },
+    {
+      "name": "ThreadPool::wait",
+      "signature": "pub fn wait(&mut self)",
+      "parameters": [],
+      "return_type": "()",
+      "description": "Blocks the calling thread until all worker threads in the pool have finished execution. Joins all thread handles using an Option-based hack to allow moving out of a Vec."
+    },
+    {
+      "name": "ThreadPool::post_message",
+      "signature": "pub fn post_message(&mut self, _msg: M) where M: Debug + Clone",
+      "parameters": [
+        {
+          "name": "_msg",
+          "type": "M (generic, requires Debug + Clone)",
+          "description": "The message or work item to post to the thread pool's blocking queue"
+        }
+      ],
+      "return_type": "()",
+      "description": "Posts a message or work item to the thread pool's shared blocking queue, where it will be picked up and processed by one of the worker threads."
+    },
+    {
+      "name": "ThreadPool::get_message",
+      "signature": "pub fn get_message(&mut self) -> M where M: Debug + Clone + Default",
+      "parameters": [],
+      "return_type": "M",
+      "description": "Intended to retrieve a result message from an output queue. Currently incomplete/stub implementation that returns M::default(). Marked as a method to be fully defined in the future."
+    }
+  ],
+  "public_classes": [
+    {
+      "name": "ThreadPool<M>",
+      "description": "A generic thread pool struct parameterized over message type M (where M: Send + 'static). Contains a shared Arc-wrapped BlockingQueue for inter-thread communication and a Vec of optional JoinHandles for managing worker threads.",
+      "methods": [
+        "new<F>(nt: u8, f: F) -> ThreadPool<M>",
+        "wait(&mut self)",
+        "post_message(&mut self, _msg: M) where M: Debug + Clone",
+        "get_message(&mut self) -> M where M: Debug + Clone + Default"
+      ]
+    }
+  ],
+  "dependencies": [
+    "rust_blocking_queue (external crate providing BlockingQueue<M>)",
+    "std::fmt (for Debug formatting trait)",
+    "std::thread (for JoinHandle and thread spawning)",
+    "std::sync (for Arc)",
+    "std::default::Default (for Default trait bound)"
+  ],
+  "filepath": "C:\\github\\JimFawcett\\RustThreadPool\\src\\lib.rs"
+}

@@ -1,0 +1,13 @@
+[package]
+name = "rust_thread_pool_demos"
+version = "0.1.0"
+authors = ["James W. Fawcett <jfawcett@twcny.rr.com>"]
+edition = "2018"
+
+[[bin]]
+name = "rust_thread_pool_demos"
+path = "src/rust_thread_pool_demos.rs"
+
+[dependencies]
+rust_thread_pool = { path = ".." }
+rust_blocking_queue = { path = "../../RustBlockingQueue" }

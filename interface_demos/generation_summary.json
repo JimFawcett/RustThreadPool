@@ -1,0 +1,14 @@
+{
+  "project_path": "c:\\github\\JimFawcett\\RustThreadPool",
+  "output_dir": "c:\\github\\JimFawcett\\RustThreadPool\\interface_demos",
+  "files_processed": 1,
+  "files_failed": 0,
+  "demos_generated": [
+    {
+      "source": "C:\\github\\JimFawcett\\RustThreadPool\\src\\lib.rs",
+      "interface_doc": "c:\\github\\JimFawcett\\RustThreadPool\\interface_demos\\rust_thread_pool_interface.json",
+      "demo_app": "c:\\github\\JimFawcett\\RustThreadPool\\interface_demos\\rust_thread_pool_demo.rs",
+      "language": "rust"
+    }
+  ]
+}
