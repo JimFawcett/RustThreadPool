@@ -1,12 +1,34 @@
 # RustThreadPool
- 
+
 <a href="https://JimFawcett.github.io/RustThreadPool.html">Documentation</a>
 
-## Concept:
-RustThreadPool is a facility for processing stream of messages with a function object concurrently on a specified number of threads, using a thread-safe blocking queue. Rust threadpool accepts number of threads and function object in constructor.  
+## Concept
 
-<<<<<<< HEAD
-Generic thread pool that accepts a thread count and a worker closure at construction. Uses [RustBlockingQueue](../RustBlockingQueue) for inter-thread communication.
+RustThreadPool is a facility for processing a stream of messages with a function object concurrently on a specified number of threads, using a thread-safe blocking queue. The function object uses messages posted to RustBlockingQueue.
+
+<img src="https://JimFawcett.github.io/Pictures/ThreadPoolDiagram.jpg" width="500" />
+
+## Design
+
+There is one struct, `ThreadPool<M>`, with three methods:
+
+```rust
+#[derive(Debug)]
+pub struct ThreadPool<M> {
+    sbq: Arc<BlockingQueue<M>>,
+    thrd: Vec<Option<JoinHandle<()>>>
+}
+
+pub fn new<F>(nt: u8, f: F) -> ThreadPool<M>
+where F: FnOnce(&BlockingQueue<M>) -> () + Send + 'static + Copy
+
+pub fn wait(&mut self)
+
+pub fn post_message(&mut self, _msg: M)
+where M: Debug + Clone
+```
+
+Sharing between threads is only possible, due to rules of the Rust language, if shared items are `Mutex`es, `Condvar`s, or aggregates of those. `BlockingQueue<T>` is shareable because its two fields are a `Mutex<VecDeque<T>>` and a `Condvar`.
 
 ## Public API
 
@@ -26,7 +48,6 @@ The closure bound `F: FnOnce(&BlockingQueue<M>) + Send + 'static + Copy` means w
 The library does not provide a built-in shutdown mechanism. The standard approach is to post one poison-pill message per worker thread, where the worker breaks its loop on receiving it:
 
 ```rust
-// workers check id == 0 as the stop signal
 for _ in 0..num_threads {
     pool.post_message(WorkItem::default());
 }
@@ -134,55 +155,22 @@ Demo 4: stress test - 8 threads, 200 messages
 *****************************************************************
 ```
 
+## Operation
+
+Operation is illustrated by `src/rust_thread_pool_demos.rs` in `interface_demos/` and by `test1.rs` in `examples/`.
+
+## Build
+
+Download and, in a command prompt, use one of:
+
+```
+cargo build
+cargo test
+cargo run --example test1
+```
+
 ## Status
 
 - `new`, `post_message`, and `wait` are complete and functional
 - `get_message` is a stub pending an output queue implementation
-=======
-Function object uses Messages posted to RustBlockingQueue.
-
-<img src="https://JimFawcett.github.io/Pictures/ThreadPoolDiagram.jpg" width="500" />                                   
-
-## Design:
-There is one struct, ThreadPool<M>, with theww methods in this design:
-
-```rust
-#[derive(Debug)]
-pub struct ThreadPool<M> 
-{
-    sbq: Arc<BlockingQueue<M>>,
-    thrd: Vec<Option<JoinHandle<()>>>
-    /* see note below about Option */
-}
-/*-----------------------------------------------------
-  construct threadpool, starting nt threads,
-  provide threadpool processing as f:F in new 
-*/
-pub fn new<F>(nt:u8, f:F) -> ThreadPool<M> 
-where F: FnOnce(&BlockingQueue<M>) -> () + Send + 'static + Copy
-
-/*-- wait for threads to finish --*/
-pub fn wait(&mut self)
-
-/*-- post to ThreadPool queue --*/
-pub fn post_message(&mut self, _msg:M) 
-where M:Debug + Clone 
-```
-Sharing between threads is only possible, due to rules of the Rust language, if the shared items are all Mutexes or Condvars, or an aggregate of those, e.g., a tuple, or struct like BlockingQueue.
-
-An instance of BlockingQueue<T> can be shared between threads because it only has two fields and those are share-able. One is a Mutex<VecDeque<T>>, and the other is a Condvar, e.g., a condition variable. 
-
-
-## Operation:
-Operation is illustrated by the file test1.rs in /examples.
-
-## Build:
-Download and, in a command prompt, use one of the following:
-  - cargo build
-  - cargo test
-  - cargo run --example test1.
-
-## Status:
-ThreadPool has been used in several projects in this repository.  You may wish to look at <a href="https://JimFawcett.github.io/RustCommExperiments.html">RustCommExperiments</a>
-
->>>>>>> 71d8f926983fe579ae8045c67f0f9e05d6c0433d
+- ThreadPool has been used in several projects - see <a href="https://JimFawcett.github.io/RustCommExperiments.html">RustCommExperiments</a>
